@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Side Quests — The Side Quest List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="side_quest.css">
+    <style>
+        :root {
+            --text:        #0e0b09;
+            --background:  #fcfbfa;
+            --primary:     #9e816e;
+            --secondary:   #abc3c7;
+            --accent:      #8f8db2;
+            --text-muted:  #6b5e56;
+            --card-bg:     rgba(252, 251, 250, 0.82);
+            --card-border: rgba(158, 129, 110, 0.18);
+            --font-display: 'Cormorant Garamond', Georgia, serif;
+            --font-body:    'DM Sans', sans-serif;
+        }
+        .view-section {
+            padding: 60px 60px 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 48px;
+        }
+
+        .page-header h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 300;
+            line-height: 1.15;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .page-header h2 em {
+            font-style: italic;
+            color: var(--primary);
+        }
+
+        .header-sub {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .label-tag {
+            font-family: var(--font-body);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: block;
+        }
+        .controls-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 36px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            padding: 18px 24px;
+        }
+
+        .search-wrap {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .search-wrap input {
+            width: 100%;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            color: var(--text);
+            background: rgba(252,251,250,0.6);
+            border: 1px solid var(--card-border);
+            padding: 9px 14px 9px 36px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-wrap input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-wrap input::placeholder { color: var(--text-muted); }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+        }
+        .controls-bar select {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            background: rgba(252,251,250,0.6);
+            border: 1px solid var(--card-border);
+            padding: 9px 32px 9px 12px;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b5e56'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .controls-bar select:focus { border-color: var(--primary); }
+
+        .stat-pill {
+            font-family: var(--font-body);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            background: rgba(158,129,110,0.08);
+            border: 1px solid var(--card-border);
+            padding: 7px 14px;
+            white-space: nowrap;
+            margin-left: auto;
+        }
+
+        .stat-pill span {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+
+        .chip {
+            font-family: var(--font-body);
+            font-size: 0.76rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            padding: 6px 14px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .chip:hover {
+            border-color: rgba(158,129,110,0.4);
+            color: var(--primary);
+        }
+
+        .chip.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--background);
+        }
+        .quest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .quest-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            padding: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .quest-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(14,11,9,0.10);
+            border-color: rgba(158,129,110,0.32);
+        }
+
+        .quest-card.completed {
+            opacity: 0.6;
+        }
+
+        .quest-card.completed .quest-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+        .priority-stripe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+
+        .quest-card:hover .priority-stripe { opacity: 0.7; }
+
+        .priority-stripe.high  { background: var(--accent); opacity: 0.6; }
+        .priority-stripe.urgent { background: #c17f5a; opacity: 0.75; }
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .cat-badge {
+            font-family: var(--font-body);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(143,141,178,0.1);
+            border: 1px solid rgba(143,141,178,0.2);
+            padding: 3px 10px;
+            white-space: nowrap;
+        }
+
+        .priority-badge {
+            font-family: var(--font-body);
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        .quest-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text);
+            margin: 0;
+        }
+        .quest-desc {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            line-height: 1.65;
+            color: var(--text-muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .quest-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            font-size: 0.72rem;
+            font-family: var(--font-body);
+            color: var(--text-muted);
+            background: rgba(158,129,110,0.07);
+            border: 1px solid var(--card-border);
+            padding: 2px 9px;
+        }
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .deadline-text {
+            font-size: 0.75rem;
+            font-family: var(--font-body);
+            color: var(--text-muted);
+        }
+
+        .deadline-text.overdue { color: #b86a4b; }
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-complete {
+            font-family: var(--font-body);
+            font-size: 0.74rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            padding: 5px 14px;
+            border: 1px solid rgba(158,129,110,0.35);
+            background: transparent;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-complete:hover {
+            background: var(--primary);
+            color: var(--background);
+        }
+
+        .btn-complete.done {
+            background: rgba(171,195,199,0.2);
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-delete {
+            font-family: var(--font-body);
+            font-size: 0.74rem;
+            padding: 5px 10px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0;
+        }
+
+        .quest-card:hover .btn-delete {
+            opacity: 1;
+        }
+
+        .btn-delete:hover {
+            color: #b86a4b;
+            border-color: rgba(184,106,75,0.3);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px dashed var(--card-border);
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .empty-state h3 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            padding: 11px 28px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: var(--background);
+            background: var(--primary);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .empty-state a:hover { background: var(--accent); }
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--text);
+            color: var(--background);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            padding: 12px 24px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 200;
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .nav-active {
+            color: var(--primary) !important;
+            border-color: var(--card-border) !important;
+            background: rgba(158, 129, 110, 0.08) !important;
+        }
+
+        @media (max-width: 900px) {
+            .view-section { padding: 40px 24px 80px; }
+            .controls-bar { flex-direction: column; align-items: stretch; }
+            .stat-pill { margin-left: 0; }
+        }
+
+        @media (max-width: 560px) {
+            .quest-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-fixed"></div>
+
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="view_quest.html" class="nav-active">View Quests</a>
+            <a href="add_quest.html">Add Quest</a>
+        </div>
+        <div class="nav-logo">
+            <img src="images/logo.png" alt="Side Quest List Logo">
+            <span class="site-title">The Side Quest List</span>
+        </div>
+        <div class="nav-right">
+            <a href="#">Random Quest</a>
+            <a href="#">Gallery</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="view-section" style="padding-top: 110px;">
+
+            <div class="page-header">
+                <span class="label-tag">Your Adventure Awaits</span>
+                <h2>My <em>Side Quests</em></h2>
+                <p class="header-sub">Pick something. Any free moment is a good moment.</p>
+            </div>
+
+            
+            <div class="controls-bar">
+                <div class="search-wrap">
+                    <span class="search-icon">⌕</span>
+                    <input type="text" id="searchInput" placeholder="Search your quests…">
+                </div>
+
+                <select id="sortSelect">
+                    <option value="date-new">Newest first</option>
+                    <option value="date-old">Oldest first</option>
+                    <option value="priority-high">Highest priority</option>
+                    <option value="priority-low">Lowest priority</option>
+                    <option value="alpha">A – Z</option>
+                </select>
+
+                <select id="statusFilter">
+                    <option value="active">Active quests</option>
+                    <option value="completed">Completed</option>
+                    <option value="all">Show all</option>
+                </select>
+
+                <div class="stat-pill" id="statPill"><span id="questCount">0</span> quests</div>
+            </div>
+
+            
+            <div class="filter-chips" id="chipContainer">
+                <div class="chip active" data-cat="all">All</div>
+                <div class="chip" data-cat="adventure">🏔 Adventure</div>
+                <div class="chip" data-cat="food">🍜 Food</div>
+                <div class="chip" data-cat="creative">🎨 Creative</div>
+                <div class="chip" data-cat="social">👥 Social</div>
+                <div class="chip" data-cat="learning">📚 Learning</div>
+                <div class="chip" data-cat="travel">✈️ Travel</div>
+                <div class="chip" data-cat="wellness">🧘 Wellness</div>
+                <div class="chip" data-cat="entertainment">🎬 Entertainment</div>
+                <div class="chip" data-cat="other">✦ Other</div>
+            </div>
+
+            
+            <div class="quest-grid" id="questGrid"></div>
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-brand">The Side Quest List</span>
+            <nav class="footer-nav">
+                <a href="index.html">Home</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact Us</a>
+            </nav>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast"><span id="toastMsg">Done!</span></div>
+
+    <script>
+        
+        const SEED_QUESTS = [
+            {
+                id: 's1',
+                title: 'Learn to make sourdough bread',
+                description: 'I\'ve always wanted to bake my own bread. Start with a simple overnight recipe and work up from there.',
+                category: 'food',
+                priority: 7,
+                deadline: '2025-12-31',
+                tags: ['weekend', 'home', 'cooking'],
+                dateAdded: new Date(Date.now() - 8 * 86400000).toISOString(),
+                completed: false
+            },
+            {
+                id: 's2',
+                title: 'Sunrise hike at Camelback Mountain',
+                description: 'Been living in Tempe for ages and still haven\'t done this. Go early before it gets too hot.',
+                category: 'adventure',
+                priority: 9,
+                deadline: '',
+                tags: ['outdoors', 'solo', 'early morning'],
+                dateAdded: new Date(Date.now() - 3 * 86400000).toISOString(),
+                completed: false
+            },
+            {
+                id: 's3',
+                title: 'Take a pottery class',
+                description: 'Something tactile and offline. Maybe a Saturday afternoon drop-in class.',
+                category: 'creative',
+                priority: 6,
+                deadline: '',
+                tags: ['weekend', 'social', 'crafts'],
+                dateAdded: new Date(Date.now() - 15 * 86400000).toISOString(),
+                completed: false
+            },
+            {
+                id: 's4',
+                title: 'Watch the full Planet Earth series',
+                description: 'All of it. Properly, without my phone.',
+                category: 'entertainment',
+                priority: 4,
+                deadline: '',
+                tags: ['home', 'relaxing'],
+                dateAdded: new Date(Date.now() - 20 * 86400000).toISOString(),
+                completed: true
+            },
+            {
+                id: 's5',
+                title: 'Learn to say hello in 10 languages',
+                description: 'A small, fun learning project. Good conversation starter.',
+                category: 'learning',
+                priority: 3,
+                deadline: '',
+                tags: ['quick', 'languages'],
+                dateAdded: new Date(Date.now() - 1 * 86400000).toISOString(),
+                completed: false
+            },
+            {
+                id: 's6',
+                title: 'Road trip to Sedona for a weekend',
+                description: 'Red rocks, hiking, good food. Maybe rent a cabin. Worth planning properly.',
+                category: 'travel',
+                priority: 8,
+                deadline: '2025-06-01',
+                tags: ['road trip', 'weekend', 'nature'],
+                dateAdded: new Date(Date.now() - 5 * 86400000).toISOString(),
+                completed: false
+            }
+        ];
+
+        const CAT_LABELS = {
+            adventure: '🏔 Adventure & Outdoors',
+            food:      '🍜 Food & Cooking',
+            creative:  '🎨 Creative & Crafts',
+            social:    '👥 Social & People',
+            learning:  '📚 Learning & Skills',
+            travel:    '✈️ Travel & Places',
+            wellness:  '🧘 Wellness & Self-care',
+            entertainment: '🎬 Entertainment',
+            other:     '✦ Other'
+        };
+
+        
+        let quests = [];
+        let activeCategory = 'all';
+
+        function loadQuests() {
+            const stored = localStorage.getItem('sideQuests');
+            if (stored) {
+                quests = JSON.parse(stored);
+            } else {
+                quests = SEED_QUESTS;
+                saveQuests();
+            }
+        }
+
+        function saveQuests() {
+            localStorage.setItem('sideQuests', JSON.stringify(quests));
+        }
+
+        
+        function getFiltered() {
+            const search   = document.getElementById('searchInput').value.toLowerCase().trim();
+            const sort     = document.getElementById('sortSelect').value;
+            const status   = document.getElementById('statusFilter').value;
+
+            let list = [...quests];
+
+            
+            if (status === 'active')    list = list.filter(q => !q.completed);
+            if (status === 'completed') list = list.filter(q => q.completed);
+
+            
+            if (activeCategory !== 'all') list = list.filter(q => q.category === activeCategory);
+
+           
+            if (search) {
+                list = list.filter(q =>
+                    q.title.toLowerCase().includes(search) ||
+                    (q.description || '').toLowerCase().includes(search) ||
+                    (q.tags || []).some(t => t.toLowerCase().includes(search))
+                );
+            }
+
+            list.sort((a, b) => {
+                if (sort === 'date-new')      return new Date(b.dateAdded) - new Date(a.dateAdded);
+                if (sort === 'date-old')      return new Date(a.dateAdded) - new Date(b.dateAdded);
+                if (sort === 'priority-high') return b.priority - a.priority;
+                if (sort === 'priority-low')  return a.priority - b.priority;
+                if (sort === 'alpha')         return a.title.localeCompare(b.title);
+            });
+
+            return list;
+        }
+        function render() {
+            const list = getFiltered();
+            const grid = document.getElementById('questGrid');
+            document.getElementById('questCount').textContent = list.length;
+
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">✦</div>
+                        <h3>No quests found</h3>
+                        <p>Try adjusting your filters — or add something new.</p>
+                        <a href="add_quest.html">Add a Side Quest →</a>
+                    </div>`;
+                return;
+            }
+            grid.innerHTML = list.map(q => {
+                const p = q.priority;
+                const stripeClass = p >= 9 ? 'urgent' : p >= 6 ? 'high' : '';
+                const priorityLabel = p >= 9 ? '🔥 Urgent' : p >= 7 ? '★ High' : p >= 4 ? '◆ Medium' : '◇ Low';
+                const catLabel = CAT_LABELS[q.category] || q.category;
+
+                let deadlineHtml = '';
+                if (q.deadline) {
+                    const d     = new Date(q.deadline);
+                    const today = new Date(); today.setHours(0,0,0,0);
+                    const overdue = d < today && !q.completed;
+                    const fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    deadlineHtml = `<span class="deadline-text${overdue ? ' overdue' : ''}">${overdue ? '⚠ ' : ''}By ${fmt}</span>`;
+                }
+
+                const tagsHtml = (q.tags || []).length
+                    ? `<div class="quest-tags">${q.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>`
+                    : '';
+
+                return `
+                <div class="quest-card${q.completed ? ' completed' : ''}" data-id="${q.id}">
+                    <div class="priority-stripe ${stripeClass}"></div>
+                    <div class="card-top">
+                        <span class="cat-badge">${catLabel}</span>
+                        <span class="priority-badge">${priorityLabel}</span>
+                    </div>
+                    <h3 class="quest-title">${escapeHtml(q.title)}</h3>
+                    ${q.description ? `<p class="quest-desc">${escapeHtml(q.description)}</p>` : ''}
+                    ${tagsHtml}
+                    <div class="card-footer">
+                        ${deadlineHtml || '<span></span>'}
+                        <div class="card-actions">
+                            <button class="btn-complete${q.completed ? ' done' : ''}" onclick="toggleComplete('${q.id}')">
+                                ${q.completed ? '✓ Done' : 'Mark done'}
+                            </button>
+                            <button class="btn-delete" onclick="deleteQuest('${q.id}')" title="Remove quest">✕</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        function escapeHtml(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function toggleComplete(id) {
+            const q = quests.find(q => q.id === id);
+            if (!q) return;
+            q.completed = !q.completed;
+            saveQuests();
+            render();
+            showToast(q.completed ? `"${q.title}" marked as complete! 🎉` : 'Quest moved back to active.');
+        }
+        function deleteQuest(id) {
+            const q = quests.find(q => q.id === id);
+            if (!q) return;
+            quests = quests.filter(q => q.id !== id);
+            saveQuests();
+            render();
+            showToast('Quest removed.');
+        }
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', render);
+        document.getElementById('sortSelect').addEventListener('change', render);
+        document.getElementById('statusFilter').addEventListener('change', render);
+
+        document.getElementById('chipContainer').addEventListener('click', e => {
+            const chip = e.target.closest('.chip');
+            if (!chip) return;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            activeCategory = chip.dataset.cat;
+            render();
+        });
+        loadQuests();
+        render();
+        window.addEventListener('storage', e => {
+            if (e.key === 'sideQuests') {
+                loadQuests();
+                render();
+            }
+        });
+    </script>
+</body>
+</html>

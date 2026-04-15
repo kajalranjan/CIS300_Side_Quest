@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Side Quest — The Side Quest List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="side_quest.css">
+    <link rel="stylesheet" href="add_quest.css">
+</head>
+<body>
+
+    
+    <div class="bg-fixed"></div>
+
+    
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="index.html">View Quests</a>
+            <a href="add_quest.html" class="nav-active">Add Quest</a>
+        </div>
+
+        <div class="nav-logo">
+            <img src="images/logo.png" alt="Side Quest List Logo">
+            <span class="site-title">The Side Quest List</span>
+        </div>
+
+        <div class="nav-right">
+            <a href="#">Random Quest</a>
+            <a href="#">Gallery</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="add-section">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <p class="label-tag">New Entry</p>
+                <h2>Add a <em>Side Quest</em></h2>
+                <p class="header-sub">Something caught your eye? Log it here before it slips away.</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+
+                <form id="addQuestForm" novalidate>
+
+                    <!-- TITLE -->
+                    <div class="field-group">
+                        <label for="title">Quest Title <span class="required">*</span></label>
+                        <p class="field-hint">Give your quest a name. Keep it exciting.</p>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="e.g. Learn to make sourdough bread"
+                            maxlength="100"
+                            required
+                        >
+                        <span class="error-msg" id="title-error">Please give your quest a title.</span>
+                        <span class="char-count" id="title-count">0 / 100</span>
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="field-group">
+                        <label for="description">Description <span class="optional">(optional)</span></label>
+                        <p class="field-hint">Any details, context, or reasons why you want to do this.</p>
+                        <textarea
+                            id="description"
+                            name="description"
+                            placeholder="e.g. I've always wanted to bake my own bread. Maybe try a simple recipe first..."
+                            rows="4"
+                            maxlength="500"
+                        ></textarea>
+                        <span class="char-count" id="desc-count">0 / 500</span>
+                    </div>
+
+                    <!-- CATEGORY + PRIORITY ROW -->
+                    <div class="field-row">
+
+                        <div class="field-group">
+                            <label for="category">Category <span class="required">*</span></label>
+                            <p class="field-hint">What kind of quest is this?</p>
+                            <select id="category" name="category" required>
+                                <option value="" disabled selected>Select a category…</option>
+                                <option value="adventure">🏔 Adventure & Outdoors</option>
+                                <option value="food">🍜 Food & Cooking</option>
+                                <option value="creative">🎨 Creative & Crafts</option>
+                                <option value="social">👥 Social & People</option>
+                                <option value="learning">📚 Learning & Skills</option>
+                                <option value="travel">✈️ Travel & Places</option>
+                                <option value="wellness">🧘 Wellness & Self-care</option>
+                                <option value="entertainment">🎬 Entertainment</option>
+                                <option value="other">✦ Other</option>
+                            </select>
+                            <span class="error-msg" id="category-error">Please select a category.</span>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="priority">Priority Score <span class="required">*</span></label>
+                            <p class="field-hint">How much do you want to do this?</p>
+                            <div class="priority-display">
+                                <span class="priority-value" id="priority-value">5</span>
+                                <span class="priority-label" id="priority-label">Sounds fun</span>
+                            </div>
+                            <input
+                                type="range"
+                                id="priority"
+                                name="priority"
+                                min="1"
+                                max="10"
+                                value="5"
+                                class="priority-slider"
+                            >
+                            <div class="priority-scale">
+                                <span>1 — Maybe someday</span>
+                                <span>10 — Do this NOW</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- COMPLETE BY DATE -->
+                    <div class="field-group">
+                        <label for="deadline">Complete By <span class="optional">(optional)</span></label>
+                        <p class="field-hint">Give yourself a loose deadline — no pressure.</p>
+                        <input
+                            type="date"
+                            id="deadline"
+                            name="deadline"
+                        >
+                        <span class="error-msg" id="deadline-error">That date is in the past. Pick a future date.</span>
+                    </div>
+
+                    <!-- TAGS -->
+                    <div class="field-group">
+                        <label for="tags">Tags <span class="optional">(optional)</span></label>
+                        <p class="field-hint">Add comma-separated tags to help you filter later.</p>
+                        <input
+                            type="text"
+                            id="tags"
+                            name="tags"
+                            placeholder="e.g. weekend, solo, cheap, outdoors"
+                        >
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <div class="form-footer">
+                        <button type="reset" class="btn-secondary" id="clearBtn">Clear</button>
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            Add to Quest List →
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- Success Toast -->
+            <div class="toast" id="toast">
+                <span class="toast-icon">✦</span>
+                <span id="toast-msg">Quest added! Go live it.</span>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-brand">The Side Quest List</span>
+            <nav class="footer-nav">
+                <a href="index.html">Home</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact Us</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        // ── Character Counters ────────────────────────────────
+        const titleInput = document.getElementById('title');
+        const descInput  = document.getElementById('description');
+
+        titleInput.addEventListener('input', () => {
+            document.getElementById('title-count').textContent =
+                `${titleInput.value.length} / 100`;
+        });
+
+        descInput.addEventListener('input', () => {
+            document.getElementById('desc-count').textContent =
+                `${descInput.value.length} / 500`;
+        });
+
+        // ── Priority Slider Labels ────────────────────────────
+        const priorityLabels = {
+            1:  'Maybe someday',
+            2:  'Low key curious',
+            3:  'On my radar',
+            4:  'Would be nice',
+            5:  'Sounds fun',
+            6:  'Pretty keen',
+            7:  'Really want this',
+            8:  'High on the list',
+            9:  'Almost urgent',
+            10: 'DO THIS NOW'
+        };
+
+        const slider = document.getElementById('priority');
+        slider.addEventListener('input', () => {
+            const v = slider.value;
+            document.getElementById('priority-value').textContent = v;
+            document.getElementById('priority-label').textContent = priorityLabels[v];
+            // Colour shift as priority rises
+            const hue = 30 - (v - 1) * 2;
+            document.getElementById('priority-value').style.color =
+                v >= 8 ? 'var(--accent)' : v >= 5 ? 'var(--primary)' : 'var(--text-muted)';
+        });
+
+        // ── Form Validation & Submit ──────────────────────────
+        const form = document.getElementById('addQuestForm');
+
+        function showError(id, show) {
+            document.getElementById(id).style.display = show ? 'block' : 'none';
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error-msg').forEach(e => e.style.display = 'none');
+            document.querySelectorAll('.field-group input, .field-group select, .field-group textarea')
+                .forEach(el => el.classList.remove('input-error'));
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearErrors();
+
+            let valid = true;
+
+            // Title required
+            if (!titleInput.value.trim()) {
+                showError('title-error', true);
+                titleInput.classList.add('input-error');
+                valid = false;
+            }
+
+            // Category required
+            const cat = document.getElementById('category');
+            if (!cat.value) {
+                showError('category-error', true);
+                cat.classList.add('input-error');
+                valid = false;
+            }
+
+            // Date must be future if filled
+            const deadline = document.getElementById('deadline');
+            if (deadline.value) {
+                const picked = new Date(deadline.value);
+                const today  = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (picked < today) {
+                    showError('deadline-error', true);
+                    deadline.classList.add('input-error');
+                    valid = false;
+                }
+            }
+
+            if (valid) {
+                showToast(`"${titleInput.value.trim()}" added to your quest list!`);
+                form.reset();
+                document.getElementById('title-count').textContent  = '0 / 100';
+                document.getElementById('desc-count').textContent   = '0 / 500';
+                document.getElementById('priority-value').textContent = '5';
+                document.getElementById('priority-label').textContent = 'Sounds fun';
+            }
+        });
+
+        // Clear button also resets counters
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            setTimeout(() => {
+                document.getElementById('title-count').textContent  = '0 / 100';
+                document.getElementById('desc-count').textContent   = '0 / 500';
+                document.getElementById('priority-value').textContent = '5';
+                document.getElementById('priority-label').textContent = 'Sounds fun';
+                clearErrors();
+            }, 0);
+        });
+
+        // ── Toast ─────────────────────────────────────────────
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            toast.classList.add('toast-show');
+            setTimeout(() => toast.classList.remove('toast-show'), 3500);
+        }
+    </script>
+
+</body>
+</html>

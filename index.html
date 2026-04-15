@@ -3,107 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Side Quest List</title>
+    <title>The Side Quest List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="side_quest.css">
 </head>
 <body>
 
-<header>
-    <div class="logo">
-        <img src="images/logo.png" alt="Logo">
-    </div>
-
-    <nav>
-        <a href="#">View Quests</a>
-        <a href="#">Add Quest</a>
-    </nav>
-
-    <h1>The Side Quest List</h1>
-
-    <div class="nav-right">
-        <a href="#">Random Quest</a>
-        <a href="#">Gallery</a>
-    </div>
-</header>
-
-<main>
-
-    <!-- ABOUT + SLIDESHOW -->
-    <section class="top-section">
-        <div class="about">
-            <h2>About Me</h2>
-            <p>
-                Hi, I’m K, the creator of SideQuest.<br><br>
-
-                This website helps you capture all the activities and adventures you want 
-                to do but can’t right now. You can add your side quests, view them all, 
-                get a random one when you’re free, and keep a visual history of the ones 
-                you’ve completed.<br><br>
-
-                Built as a fun personal productivity + motivation tool, SideQuest turns 
-                your bucket list ideas into something actionable and exciting. All content 
-                is created by you — making every list completely personal.<br><br>
-
-                Feel free to start adding your own side quests today!
-            </p>
-        </div>
-
-        <div class="slideshow">
-            <img src="images/placeholder.jpg" alt="Side quest examples">
-        </div>
-    </section>
-
-    <!-- FEATURE BUTTONS -->
-    <section class="features">
-
-        <div class="feature">
-            <div class="circle">
-                <img src="images/viewList.png" alt="View Quests">
-            </div>
-            <p>View Side Quests</p>
-        </div>
-
-        <div class="feature">
-            <div class="circle">
-                <img src="images/addList.png" alt="Add Quest">
-            </div>
-            <p>Add Side Quest</p>
-        </div>
-
-        <div class="feature">
-            <div class="circle">
-                <img src="images/randomQuest.png" alt="Random Quest">
-            </div>
-            <p>Random Quest</p>
-        </div>
-
-        <div class="feature">
-            <div class="circle">
-                <img src="images/gallery.png" alt="Gallery">
-            </div>
-            <p>Gallery</p>
-        </div>
-
-    </section>
+    
+    <div class="bg-fixed"></div>
 
     
-    <section class="video">
-        <h2>Video Tutorial</h2>
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="view_quest.html">View Quests</a>
+            <a href="add_quest.html">Add Quest</a>
+        </div>
 
-        <video controls>
-            <source src="images/video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </section>
+        <div class="nav-logo">
+            <img src="images/logo.png" alt="Side Quest List Logo">
+            <span class="site-title">The Side Quest List</span>
+        </div>
 
-</main>
+        <div class="nav-right">
+            <a href="#">Random Quest</a>
+            <a href="#">Gallery</a>
+        </div>
+    </header>
 
-<footer>
-    <a href="#">Home</a>
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact Us</a>
-</footer>
+    
+    <main>
+
+        
+        <section class="section about-section">
+            <div class="about-inner">
+                <div class="about-text">
+                    <p class="label-tag">The Story</p>
+                    <h2>About the<br><em>Side Quest List</em></h2>
+                    <p class="body-text">
+                        Hi, I'm K — and I built this because I kept saying <em>"I'd love to do that someday"</em> without ever actually doing it.
+                    </p>
+                    <p class="body-text">
+                        The Side Quest List is your personal collection of all the things you want to do but haven't had time for yet. Add your ideas, browse them when you're free, or let the site pick one for you. When you finish a quest, log it — with photos, reflections, whatever you like.
+                    </p>
+                    <p class="body-text">
+                        Life's too short for a to-do list. This is your adventure list.
+                    </p>
+                    <a href="#" class="cta-btn">Start Your List →</a>
+                </div>
+
+                <div class="about-visual">
+                    <div class="photo-frame">
+                        <img src="images/placeholder.jpg" alt="Side quest adventures">
+                        <div class="frame-accent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section features-section">
+            <p class="label-tag center">What You Can Do</p>
+            <h2 class="section-heading center">Your Quest Hub</h2>
+
+            <div class="features-grid">
+
+                <a href="#" class="feature-card">
+                    <div class="feature-icon">
+                        <img src="images/viewList.png" alt="View Quests">
+                    </div>
+                    <h3>View Side Quests</h3>
+                    <p>Browse your entire list and pick something to do today.</p>
+                </a>
+
+                <a href="#" class="feature-card">
+                    <div class="feature-icon">
+                        <img src="images/addList.png" alt="Add Quest">
+                    </div>
+                    <h3>Add Side Quest</h3>
+                    <p>Capture a new idea before it slips away.</p>
+                </a>
+
+                <a href="#" class="feature-card">
+                    <div class="feature-icon">
+                        <img src="images/randomQuest.png" alt="Random Quest">
+                    </div>
+                    <h3>Random Quest</h3>
+                    <p>Can't decide? Let fate choose your next adventure.</p>
+                </a>
+
+                <a href="#" class="feature-card">
+                    <div class="feature-icon">
+                        <img src="images/gallery.png" alt="Gallery">
+                    </div>
+                    <h3>Quest History</h3>
+                    <p>Relive the quests you've already conquered.</p>
+                </a>
+
+            </div>
+        </section>
+
+        
+        <section class="section video-section">
+            <div class="video-inner">
+                <div class="video-text">
+                    <p class="label-tag">See How It Works</p>
+                    <h2>A Quick<br><em>Walkthrough</em></h2>
+                    <p class="body-text">New here? Watch this short video to see how to add your first quest, browse your list, and make the most of your free time.</p>
+                </div>
+                <div class="video-frame">
+                    <video controls>
+                        <source src="images/video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-brand">The Side Quest List</span>
+            <nav class="footer-nav">
+                <a href="#">Home</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact Us</a>
+            </nav>
+        </div>
+    </footer>
 
 </body>
 </html>
