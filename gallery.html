@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Relive your completed side quests — add photos, write reflections, and keep a personal log of every adventure you've conquered.">
+    <meta name="keywords" content="quest history, side quest gallery, completed quests, memories, reflections, adventure log">
+    <title>Quest History — The Side Quest List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="side_quest.css">
+</head>
+<body>
+
+    <div class="bg-fixed"></div>
+
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="view_quest.html">View Quests</a>
+            <a href="add_quest.html">Add Quest</a>
+        </div>
+        <div class="nav-logo">
+            <img src="images/logo.png" alt="Side Quest List Logo">
+            <span class="site-title">The Side Quest List</span>
+        </div>
+        <div class="nav-right">
+            <a href="random_quest.html">Random Quest</a>
+            <a href="gallery.html" class="nav-active">Gallery</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="gallery-section">
+
+            <!-- Page header -->
+            <div class="gl-header">
+                <div class="text-panel">
+                    <span class="label-tag">Your Conquered Quests</span>
+                    <h2>Quest <em>History</em></h2>
+                    <p class="body-text" style="text-align:center;margin:0 auto;">
+                        Every quest you tick off lands here. Add a photo, write a reflection,
+                        and keep the memory alive. Your adventure log, all in one place.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Gallery grid -->
+            <div class="gl-grid" id="galleryGrid"></div>
+
+            <!-- Thoughts table -->
+            <div class="thoughts-section" id="thoughtsSection">
+                <span class="label-tag">Memory Log</span>
+                <h3 class="thoughts-heading">The <em>Thoughts Table</em></h3>
+                <p class="thoughts-sub">A running diary of every quest you've reflected on.</p>
+                <div class="table-wrap">
+                    <table class="thoughts-table" id="thoughtsTable">
+                        <thead>
+                            <tr>
+                                <th>Date Completed</th>
+                                <th>Side Quest</th>
+                                <th>Your Thoughts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="thoughtsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-brand">The Side Quest List</span>
+            <nav class="footer-nav">
+                <a href="#">sidequestlist@email.com</a>
+                <a href="index.html">Home</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact Us</a>
+            </nav>
+        </div>
+    </footer>
+
+    <!-- Reflection modal -->
+    <div class="modal-backdrop" id="modalBackdrop">
+        <div class="modal-card" id="modalCard">
+            <button class="modal-close" id="modalClose">✕</button>
+            <p class="label-tag">Add a Memory</p>
+            <h3 class="modal-title" id="modalTitle"></h3>
+
+            <div class="field-group">
+                <label class="modal-label">Photo <span class="optional">(optional)</span></label>
+                <p class="modal-hint">Upload a photo from this quest.</p>
+                <input type="file" id="photoInput" accept="image/*" class="photo-input">
+                <div class="photo-preview-wrap" id="photoPreviewWrap" style="display:none;">
+                    <img id="photoPreview" src="" alt="Quest photo preview">
+                    <button class="btn-remove-photo" id="removePhoto">Remove photo</button>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label class="modal-label" for="reflectionInput">Reflection <span class="optional">(optional)</span></label>
+                <p class="modal-hint">How did it go? What will you remember?</p>
+                <textarea id="reflectionInput" rows="4" maxlength="600"
+                    placeholder="e.g. The bread actually worked! Took 3 tries but worth it…"></textarea>
+                <span class="char-count" id="reflectionCount">0 / 600</span>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" id="modalCancel">Cancel</button>
+                <button class="btn-primary" id="modalSave">Save Memory →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+    <script>
+        const CAT_LABELS = {
+            adventure:'Adventure & Outdoors', food:'Food & Cooking',
+            creative:'Creative & Crafts',    social:'Social & People',
+            learning:'Learning & Skills',     travel:'Travel & Places',
+            wellness:'Wellness & Self-care',  entertainment:'Entertainment',
+            other:'Other'
+        };
+
+        function esc(str) {
+            return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function getQuests() {
+            const s = localStorage.getItem('sideQuests');
+            return s ? JSON.parse(s) : [];
+        }
+        function saveQuests(quests) {
+            localStorage.setItem('sideQuests', JSON.stringify(quests));
+        }
+
+        function getMemories() {
+            const s = localStorage.getItem('questMemories');
+            return s ? JSON.parse(s) : {};
+        }
+
+        function saveMemories(mem) {
+            localStorage.setItem('questMemories', JSON.stringify(mem));
+        }
+
+        function render() {
+            const completed = getQuests().filter(q => q.completed);
+            const memories  = getMemories();
+            const grid      = document.getElementById('galleryGrid');
+
+            if (!completed.length) {
+                grid.innerHTML = `
+                    <div class="gl-empty">
+                        <div class="idle-icon">✦</div>
+                        <h3>No completed quests yet</h3>
+                        <p>Head to your quest list and mark something as done — it'll show up here.</p>
+                        <a href="view_quest.html">View My Quests →</a>
+                    </div>`;
+                document.getElementById('thoughtsSection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('thoughtsSection').style.display = 'block';
+
+            grid.innerHTML = completed.map(q => {
+                const mem     = memories[q.id] || {};
+                const catLabel = CAT_LABELS[q.category] || q.category;
+                const dateStr  = mem.completedDate
+                    ? new Date(mem.completedDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+                    : '—';
+
+                const photoHtml = mem.photo
+                    ? `<div class="gl-photo"><img src="${mem.photo}" alt="Photo for ${esc(q.title)}"></div>`
+                    : `<div class="gl-photo-placeholder"><span>✦</span></div>`;
+
+                const reflectionHtml = mem.reflection
+                    ? `<p class="gl-reflection">"${esc(mem.reflection)}"</p>`
+                    : `<p class="gl-no-reflection">No reflection added yet.</p>`;
+
+                return `
+                    <div class="gl-card" data-id="${q.id}">
+                        ${photoHtml}
+                        <div class="gl-card-body">
+                            <div class="gl-card-top">
+                                <span class="cat-badge">${catLabel}</span>
+                                <span class="gl-date">${dateStr}</span>
+                            </div>
+                            <h3 class="gl-title">${esc(q.title)}</h3>
+                            ${reflectionHtml}
+                            <button class="gl-edit-btn" onclick="openModal('${q.id}')">
+                                ${mem.reflection || mem.photo ? 'Edit memory' : 'Add memory'} →
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            renderTable(completed, memories);
+        }
+
+        function renderTable(completed, memories) {
+            const tbody = document.getElementById('thoughtsBody');
+            const rows  = completed.map(q => {
+                const mem     = memories[q.id] || {};
+                const dateStr = mem.completedDate
+                    ? new Date(mem.completedDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+                    : '—';
+                const thought = mem.reflection ? esc(mem.reflection) : '<em>No reflection yet.</em>';
+                return `<tr>
+                    <td>${dateStr}</td>
+                    <td>${esc(q.title)}</td>
+                    <td>${thought}</td>
+                </tr>`;
+            }).join('');
+
+            tbody.innerHTML = rows || `<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">No entries yet.</td></tr>`;
+        }
+
+        let activeId   = null;
+        let photoData  = null;
+
+        function openModal(id) {
+            activeId = id;
+            const quests  = getQuests();
+            const q       = quests.find(q => q.id === id);
+            const mem     = getMemories()[id] || {};
+
+            document.getElementById('modalTitle').textContent = q.title;
+            document.getElementById('reflectionInput').value  = mem.reflection || '';
+            document.getElementById('reflectionCount').textContent =
+                `${(mem.reflection||'').length} / 600`;
+
+            photoData = mem.photo || null;
+            const wrap = document.getElementById('photoPreviewWrap');
+            if (photoData) {
+                document.getElementById('photoPreview').src = photoData;
+                wrap.style.display = 'block';
+            } else {
+                wrap.style.display = 'none';
+            }
+
+            document.getElementById('photoInput').value = '';
+            document.getElementById('modalBackdrop').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('modalBackdrop').classList.remove('open');
+            activeId  = null;
+            photoData = null;
+        }
+
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('modalCancel').addEventListener('click', closeModal);
+        document.getElementById('modalBackdrop').addEventListener('click', e => {
+            if (e.target === document.getElementById('modalBackdrop')) closeModal();
+        });
+
+        
+        document.getElementById('photoInput').addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                photoData = ev.target.result;
+                document.getElementById('photoPreview').src = photoData;
+                document.getElementById('photoPreviewWrap').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('removePhoto').addEventListener('click', () => {
+            photoData = null;
+            document.getElementById('photoInput').value = '';
+            document.getElementById('photoPreviewWrap').style.display = 'none';
+        });
+
+        
+        document.getElementById('reflectionInput').addEventListener('input', function() {
+            document.getElementById('reflectionCount').textContent = `${this.value.length} / 600`;
+        });
+
+        document.getElementById('modalSave').addEventListener('click', () => {
+            const reflection = document.getElementById('reflectionInput').value.trim();
+            const memories   = getMemories();
+            memories[activeId] = {
+                reflection,
+                photo:         photoData,
+                completedDate: memories[activeId]?.completedDate || new Date().toISOString()
+            };
+            saveMemories(memories);
+            closeModal();
+            render();
+            showToast('Memory saved! ✦');
+        });p
+        function stampDates() {
+            const quests   = getQuests();
+            const memories = getMemories();
+            let changed    = false;
+            quests.filter(q => q.completed).forEach(q => {
+                if (!memories[q.id]) {
+                    memories[q.id] = { completedDate: new Date().toISOString() };
+                    changed = true;
+                }
+            });
+            if (changed) saveMemories(memories);
+        }
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('toast-show');
+            setTimeout(() => toast.classList.remove('toast-show'), 3000);
+        }
+        stampDates();
+        render();
+
+        window.addEventListener('storage', e => {
+            if (e.key === 'sideQuests' || e.key === 'questMemories') {
+                stampDates();
+                render();
+            }
+        });
+    </script>
+</body>
+</html>

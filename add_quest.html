@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Side Quest List: add your own side quests here!">
     <title>Add a Side Quest — The Side Quest List</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,14 +12,12 @@
     <link rel="stylesheet" href="add_quest.css">
 </head>
 <body>
-
-    
     <div class="bg-fixed"></div>
 
     
     <header class="navbar">
         <div class="nav-left">
-            <a href="index.html">View Quests</a>
+            <a href="view_quest.html">View Quests</a>
             <a href="add_quest.html" class="nav-active">Add Quest</a>
         </div>
 
@@ -28,19 +27,20 @@
         </div>
 
         <div class="nav-right">
-            <a href="#">Random Quest</a>
-            <a href="#">Gallery</a>
+            <a href="random_quest.html">Random Quest</a>
+            <a href="gallery.html">Gallery</a>
         </div>
     </header>
-
     <main>
         <section class="add-section">
 
             <!-- Page Header -->
             <div class="page-header">
-                <p class="label-tag">New Entry</p>
-                <h2>Add a <em>Side Quest</em></h2>
-                <p class="header-sub">Something caught your eye? Log it here before it slips away.</p>
+                <div class="text-panel">
+                    <p class="label-tag">New Entry</p>
+                    <h2>Add a <em>Side Quest</em></h2>
+                    <p class="header-sub">Something caught your eye? Log it here before it slips away.</p>
+                </div>
             </div>
 
             <!-- Form Card -->
@@ -172,6 +172,7 @@
         <div class="footer-inner">
             <span class="footer-brand">The Side Quest List</span>
             <nav class="footer-nav">
+                <a href="#">sidequestlist@email.com</a>
                 <a href="index.html">Home</a>
                 <a href="#">Privacy</a>
                 <a href="#">Terms</a>
@@ -268,10 +269,31 @@
             }
 
             if (valid) {
-                showToast(`"${titleInput.value.trim()}" added to your quest list!`);
+                // Build the quest object
+                const newQuest = {
+                    id:          'q' + Date.now(),
+                    title:       titleInput.value.trim(),
+                    description: document.getElementById('description').value.trim(),
+                    category:    document.getElementById('category').value,
+                    priority:    parseInt(document.getElementById('priority').value),
+                    deadline:    document.getElementById('deadline').value,
+                    tags:        document.getElementById('tags').value
+                                    .split(',')
+                                    .map(t => t.trim())
+                                    .filter(t => t.length > 0),
+                    dateAdded:   new Date().toISOString(),
+                    completed:   false
+                };
+
+                // Save to localStorage
+                const existing = JSON.parse(localStorage.getItem('sideQuests') || '[]');
+                existing.push(newQuest);
+                localStorage.setItem('sideQuests', JSON.stringify(existing));
+
+                showToast(`"${newQuest.title}" added to your quest list!`);
                 form.reset();
-                document.getElementById('title-count').textContent  = '0 / 100';
-                document.getElementById('desc-count').textContent   = '0 / 500';
+                document.getElementById('title-count').textContent    = '0 / 100';
+                document.getElementById('desc-count').textContent     = '0 / 500';
                 document.getElementById('priority-value').textContent = '5';
                 document.getElementById('priority-label').textContent = 'Sounds fun';
             }

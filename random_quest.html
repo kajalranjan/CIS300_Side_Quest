@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Can't decide what to do? Let The Side Quest List pick a random adventure from your personal quest list.">
+    <title>Random Quest — The Side Quest List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="side_quest.css">
+</head>
+<body>
+
+    <div class="bg-fixed"></div>
+
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="view_quest.html">View Quests</a>
+            <a href="add_quest.html">Add Quest</a>
+        </div>
+        <div class="nav-logo">
+            <img src="images/logo.png" alt="Side Quest List Logo">
+            <span class="site-title">The Side Quest List</span>
+        </div>
+        <div class="nav-right">
+            <a href="random_quest.html" class="nav-active">Random Quest</a>
+            <a href="gallery.html">Gallery</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="random-section">
+
+            <div class="rq-header">
+                <div class="text-panel">
+                    <span class="label-tag">Feeling Indecisive?</span>
+                    <h2>Your Next<br><em>Adventure</em></h2>
+                    <p class="body-text" style="text-align:center;margin:0 auto;">
+                        Sometimes the hardest part of having free time is choosing what to do with it.
+                        Let fate decide — press the space bar and your list will hand you something worth doing.
+                    </p>
+                </div>    
+            </div>
+
+            <div class="spacebar-hint">
+                <p class="hint-text">Press the space bar to roll a random side quest</p>
+                <div class="key-wrapper">
+                    <div class="key" id="spaceKey">space</div>
+                    <span class="or-divider">or</span>
+                    <button class="btn-roll" onclick="rollQuest()">Pick for me →</button>
+                </div>
+            </div>
+
+            <div class="result-area" id="resultArea">
+                <div class="idle-ring">
+                    <div class="idle-icon">✦</div>
+                    <p class="idle-label">Your quest awaits. Hit space when you're ready.</p>
+                </div>
+            </div>
+
+            <p class="roll-counter" id="rollCounter">
+                Rolled <span id="rollCount">0</span> time<span id="rollPlural">s</span>
+            </p>
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-brand">The Side Quest List</span>
+            <nav class="footer-nav">
+                <a href="#">sidequestlist@email.com</a>
+                <a href="index.html">Home</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact Us</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        const CAT_LABELS = {
+            adventure:'Adventure & Outdoors', food:'Food & Cooking',
+            creative:'Creative & Crafts',    social:'Social & People',
+            learning:'Learning & Skills',     travel:'Travel & Places',
+            wellness:'Wellness & Self-care',  entertainment:'Entertainment',
+            other:'Other'
+        };
+        const PRI_LABELS = {
+            1:'Maybe someday',2:'Low key curious',3:'On my radar',4:'Would be nice',
+            5:'Sounds fun',6:'Pretty keen',7:'Really want this',8:'High on the list',
+            9:'Almost urgent',10:'DO THIS NOW'
+        };
+
+        let lastId = null, rollCount = 0;
+
+        function getActive() {
+            const s = localStorage.getItem('sideQuests');
+            return s ? JSON.parse(s).filter(q => !q.completed) : [];
+        }
+
+        function esc(str) {
+            return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function rollQuest() {
+            const key = document.getElementById('spaceKey');
+            key.classList.add('pressed');
+            setTimeout(() => key.classList.remove('pressed'), 120);
+
+            const quests = getActive();
+            if (!quests.length) { showEmpty(); return; }
+
+            const pool = quests.length > 1 ? quests.filter(q => q.id !== lastId) : quests;
+            const pick = pool[Math.floor(Math.random() * pool.length)];
+            lastId = pick.id;
+            document.getElementById('rollCount').textContent  = ++rollCount;
+            document.getElementById('rollPlural').textContent = rollCount === 1 ? '' : 's';
+            document.getElementById('rollCounter').classList.add('visible');
+
+            renderCard(pick);
+        }
+        function renderCard(q) {
+            const p        = q.priority;
+            const stripe   = p >= 9 ? 'urgent' : p >= 6 ? 'high' : '';
+            const priIcon  = p >= 9 ? '🔥 Urgent' : p >= 7 ? '★ High' : p >= 4 ? '◆ Medium' : '◇ Low';
+            const descHtml = q.description ? `<p class="result-description">${esc(q.description)}</p>` : '';
+            const tagsHtml = (q.tags||[]).length
+                ? `<div class="result-tags">${q.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
+
+            let deadlineHtml = '';
+            if (q.deadline) {
+                const d = new Date(q.deadline), today = new Date();
+                today.setHours(0,0,0,0);
+                const fmt = d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+                deadlineHtml = `<div class="meta-item">${d < today ? '⚠ Overdue — ' : 'Complete by '}<span>${fmt}</span></div>`;
+            }
+            document.getElementById('resultArea').innerHTML = `
+                <div class="quest-result-card">
+                    <div class="priority-stripe-top ${stripe}"></div>
+                    <div class="result-card-top">
+                        <span class="cat-badge">${CAT_LABELS[q.category]||q.category}</span>
+                        <span class="priority-badge">${priIcon}</span>
+                    </div>
+                    <h3 class="result-title">${esc(q.title)}</h3>
+                    ${descHtml}
+                    <div class="result-meta">
+                        <div class="meta-item">Priority <span>${p} / 10 — ${PRI_LABELS[p]}</span></div>
+                        ${deadlineHtml}
+                    </div>
+                    ${tagsHtml}
+                    <div class="result-card-footer">
+                        <span class="roll-again-hint">Not feeling it? Roll again.</span>
+                        <button class="btn-again" onclick="rollQuest()">Roll again →</button>
+                    </div>
+                </div>`;
+        }
+
+        function showEmpty() {
+            document.getElementById('resultArea').innerHTML = `
+                <div class="empty-result">
+                    <div class="idle-icon">✦</div>
+                    <h3>No active quests</h3>
+                    <p>Your quest list is empty — or everything's been conquered.<br>Add something new to get started.</p>
+                    <a href="add_quest.html">Add a Side Quest →</a>
+                </div>`;
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.code === 'Space' && e.target === document.body) {
+                e.preventDefault();
+                rollQuest();
+            }
+        });
+    </script>
+
+</body>
+</html>
