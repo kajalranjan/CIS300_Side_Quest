@@ -685,7 +685,7 @@ footer {
     font-weight: 400; 
     width: 220px; 
 }
-.thoughts-table tr:hover td { background: rgba(158, 129, 110, 0.25); }
+.thoughts-table tr:hover td { background: rgba(158, 129, 110, 0.70); }
 
 
 .modal-backdrop {
