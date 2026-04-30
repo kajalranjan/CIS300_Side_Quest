@@ -148,7 +148,8 @@
         function saveMemories(mem) {
             localStorage.setItem('questMemories', JSON.stringify(mem));
         }
-
+        console.log('completed quests:', getQuests().filter(q => q.completed));
+        render();
         function render() {
             const completed = getQuests().filter(q => q.completed);
             const memories  = getMemories();
