@@ -26,7 +26,7 @@
         </div>
         <div class="nav-right">
             <a href="random_quest.html">Random Quest</a>
-            <a href="gallery.html" class="nav-active">Gallery</a>
+            <a href="index.html" class="nav-active">Gallery</a>
         </div>
     </header>
 
@@ -148,8 +148,7 @@
         function saveMemories(mem) {
             localStorage.setItem('questMemories', JSON.stringify(mem));
         }
-        console.log('completed quests:', getQuests().filter(q => q.completed));
-        render();
+        
         function render() {
             const completed = getQuests().filter(q => q.completed);
             const memories  = getMemories();
