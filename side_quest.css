@@ -661,22 +661,31 @@ footer {
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--background);
     padding: 12px 20px;
-    background: rgba(143,141,178,0.08);
-    border: 1px solid var(--card-border);
+    background: rgba(158, 129, 110, 0.75);
+    border: 1px solid rgba(158, 129, 110, 0.4);
 }
 .thoughts-table td {
     padding: 14px 20px;
     vertical-align: top;
-    color: var(--text-muted);
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
+    color: var(--background);
+    border: 1px solid rgba(158, 129, 110, 0.3);
+    background: rgba(14, 11, 9, 0.55);
     line-height: 1.6;
 }
-.thoughts-table td:first-child { white-space: nowrap; color: var(--primary); font-weight: 500; width: 140px; }
-.thoughts-table td:nth-child(2) { color: var(--text); font-weight: 400; width: 220px; }
-.thoughts-table tr:hover td { background: rgba(158,129,110,0.04); }
+.thoughts-table td:first-child { 
+    white-space: nowrap; 
+    color: var(--secondary); 
+    font-weight: 500; 
+    width: 140px; 
+}
+.thoughts-table td:nth-child(2) { 
+    color: var(--background); 
+    font-weight: 400; 
+    width: 220px; 
+}
+.thoughts-table tr:hover td { background: rgba(158, 129, 110, 0.25); }
 
 
 .modal-backdrop {
